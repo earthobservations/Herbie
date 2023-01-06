@@ -53,6 +53,8 @@ jobs:
     - name: Install Anaconda environment
       run: |
         conda init bash
+        CONDA_BASE=$(conda info --base)
+        source ${CONDA_BASE}/bin/activate
         conda env create --file environment-test.yml
         conda activate herbie-test
 
