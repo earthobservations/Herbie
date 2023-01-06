@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, ci-tests ]
+  pull_request:
+    branches: [ main, ci-tests ]
+
+  # Allow job to be triggered manually.
+  workflow_dispatch:
+
+# Cancel in-progress jobs when pushing to the same branch.
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10", "3.11"]
+        # Activate other OS on demand. No need to run the full matrix here.
+        #include:
+        #  - os: "macos-latest"
+        #    python-version: "3.10"
+        #  - os: "windows-latest"
+        #    python-version: "3.10"
+
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
+
+    defaults:
+      run:
+        shell: bash
+
+    name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
+    steps:
+
+    - name: Acquire sources
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+        cache: pip
+
+    - name: Install prerequisites (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgeos-c1v5
+
+    - name: Install project
+      run: pip install --editable=.
+
+    - name: Run tests
+      run: |
+        pip install --requirement requirements-dev.txt
+        pytest -vvv
