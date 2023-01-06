@@ -52,6 +52,7 @@ jobs:
 
     - name: Install Anaconda environment
       run: |
+        conda init bash
         conda env create --file environment-test.yml
         conda activate herbie-test
 
