@@ -17,6 +17,7 @@ dependencies:
   - numpy
   - pandas
   - pygrib
+  - pytest
   - requests
   - toml
   - xarray>=2022.6.0

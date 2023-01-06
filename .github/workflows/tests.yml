@@ -50,16 +50,15 @@ jobs:
         architecture: x64
         cache: pip
 
-    - name: Install prerequisites (Linux)
-      if: runner.os == 'Linux'
+    - name: Install Anaconda environment
       run: |
-        sudo apt-get update
-        sudo apt-get install libgeos-c1v5
+        conda env create --file environment-test.yml
+        conda activate herbie-test
 
     - name: Install project
-      run: pip install --editable=.
+      run: |
+        pip install --editable=.
 
     - name: Run tests
       run: |
-        pip install --requirement requirements-dev.txt
         pytest -vvv
