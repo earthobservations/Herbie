@@ -84,27 +84,25 @@ def test_do_not_remove_file():
     assert H.get_localFilePath(var).exists()
 
 
+@pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
 def test_make_idx_with_wgrib():
-    import shutil
+    H = Herbie(
+        "2022-12-13 6:00",
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
+    H.download(verbose=True)
 
-    if shutil.which("wgrib2"):
-        H = Herbie(
-            "2022-12-13 6:00",
-            model="hrrr",
-            product="sfc",
-            save_dir=save_dir,
-        )
-        H.download(verbose=True)
+    # Pretent this was a local file
+    H.idx = None
+    H.idx_source = None
+    H.grib_source = "local"
 
-        # Pretent this was a local file
-        H.idx = None
-        H.idx_source = None
-        H.grib_source = "local"
-
-        # Generate IDX file
-        df = H.read_idx()
-        assert len(df), "Length of index file is 0."
-        assert H.idx_source == "generated", "Doesn't look like a generated idx file."
+    # Generate IDX file
+    df = H.read_idx()
+    assert len(df), "Length of index file is 0."
+    assert H.idx_source == "generated", "Doesn't look like a generated idx file."
 
 
 @pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
