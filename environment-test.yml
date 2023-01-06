@@ -29,6 +29,3 @@ dependencies:
   - eccodes # required by cfgrib
   - geos # required by cartopy
   - proj # required by cartopy
-
-  - pip:
-      - herbie-data
