@@ -35,7 +35,7 @@ jobs:
 
     defaults:
       run:
-        shell: bash
+        shell: bash -el {0}
 
     name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
     steps:
@@ -43,20 +43,18 @@ jobs:
     - name: Acquire sources
       uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
+    - name: Anaconda setup
+      uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: ${{ matrix.python-version }}
-        architecture: x64
-        cache: pip
+        environment-file: environment-test.yml
+        activate-environment: herbie-test
+        auto-activate-base: false
 
-    - name: Install Anaconda environment
+    - name: Anaconda info
       run: |
-        conda init bash
-        CONDA_BASE=$(conda info --base)
-        source ${CONDA_BASE}/bin/activate
-        conda env create --file environment-test.yml
-        conda activate herbie-test
+        conda info
+        conda config --show
 
     - name: Install project
       run: |
