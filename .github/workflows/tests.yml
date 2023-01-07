@@ -56,18 +56,33 @@ jobs:
         key:
           ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
 
-    - name: Anaconda setup
+    - name: Anaconda setup (Mambaforge)
       uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: ${{ matrix.python-version }}
+        miniforge-variant: Mambaforge
+        miniforge-version: latest
         mamba-version: "*"
         use-mamba: true
         channels: conda-forge,defaults
         channel-priority: true
-        environment-file: environment-test.yml
         activate-environment: herbie-test
         auto-activate-base: false
         use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
+
+    - name: Cache Anaconda environment
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.CONDA }}/envs
+        key:
+          conda-${{ runner.os }}--${{ runner.arch }}--${{
+          hashFiles('environment-test.yml') }}-${{ env.CACHE_NUMBER
+          }}
+      env:
+        # Increase this value if `environment-test.yml` has not changed,
+        # but you still want to reset the cache.
+        CACHE_NUMBER: 0
+      id: cache
 
     - name: Anaconda info
       run: conda info
@@ -75,6 +90,11 @@ jobs:
       run: conda config --show
     - name: Environment variables
       run: printenv | sort
+
+    - name: Update Anaconda environment
+      run:
+        mamba env update --name herbie-test --file environment-test.yml
+      if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Install project
       run: |
