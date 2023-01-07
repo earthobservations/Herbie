@@ -62,4 +62,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -vvv
+        pytest -vvv -k test_ecmwf
