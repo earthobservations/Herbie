@@ -45,6 +45,17 @@ jobs:
       with:
         fetch-depth: 2
 
+    - name: Cache Anaconda packages
+      uses: actions/cache@v3
+      env:
+        # Increase this value if `environment-test.yml` has not changed,
+        # but you still want to reset the cache.
+        CACHE_NUMBER: 0
+      with:
+        path: ~/conda_pkgs_dir
+        key:
+          ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+
     - name: Anaconda setup
       uses: conda-incubator/setup-miniconda@v2
       with:
@@ -56,6 +67,7 @@ jobs:
         environment-file: environment-test.yml
         activate-environment: herbie-test
         auto-activate-base: false
+        use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
 
     - name: Anaconda info
       run: conda info
