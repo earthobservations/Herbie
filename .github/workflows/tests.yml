@@ -56,10 +56,11 @@ jobs:
         auto-activate-base: false
 
     - name: Anaconda info
-      run: |
-        conda info
-        conda config --show
-        printenv | sort
+      run: conda info
+    - name: Anaconda configuration
+      run: conda config --show
+    - name: Environment variables
+      run: printenv | sort
 
     - name: Install project
       run: |
