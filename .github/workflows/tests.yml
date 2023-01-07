@@ -45,7 +45,7 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Cache Anaconda packages
+    - name: CACHING - Anaconda packages
       uses: actions/cache@v3
       id: cache-pkg
       with:
@@ -58,7 +58,7 @@ jobs:
         # but you still want to reset the cache.
         CACHE_NUMBER: 0
 
-    - name: Anaconda setup (Mambaforge)
+    - name: INSTALL - Anaconda setup (Mambaforge)
       uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: ${{ matrix.python-version }}
@@ -71,14 +71,14 @@ jobs:
         activate-environment: herbie-test
         auto-activate-base: false
         use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
-      # if: steps.cache-pkg.outputs.cache-hit != 'true'
+      if: steps.cache-pkg.outputs.cache-hit != 'true'
 
-    - name: Cache Anaconda environment
     - name: WORKAROUND - Add `mamba` to system path
       # When the `conda-pkg` cache can be restored, `mamba` is missing from system path.
       run: echo "/usr/share/miniconda3/condabin" >> $GITHUB_PATH
       if: steps.cache-pkg.outputs.cache-hit == 'true'
 
+    - name: CACHING - Anaconda environment
       uses: actions/cache@v3
       id: cache-env
       with:
@@ -102,12 +102,12 @@ jobs:
         command -v conda
         command -v mamba
 
-    - name: Update Anaconda environment
+    - name: INSTALL - Update Anaconda environment
       run:
         mamba env update --name herbie-test --file environment-test.yml
       if: steps.cache-env.outputs.cache-hit != 'true'
 
-    - name: Install project
+    - name: INSTALL - Project
       run: |
         pip install --editable=.
 
