@@ -32,7 +32,6 @@ jobs:
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
-      TMPDIR: ${{ process.env.RUNNER_TEMP }}
 
     defaults:
       run:
@@ -70,5 +69,7 @@ jobs:
         pip install --editable=.
 
     - name: Run tests
+      env:
+        TMPDIR: ${{ runner.temp }}
       run: |
         pytest -vvv -k test_ecmwf
