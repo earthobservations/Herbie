@@ -74,6 +74,11 @@ jobs:
       # if: steps.cache-pkg.outputs.cache-hit != 'true'
 
     - name: Cache Anaconda environment
+    - name: WORKAROUND - Add `mamba` to system path
+      # When the `conda-pkg` cache can be restored, `mamba` is missing from system path.
+      run: echo "/usr/share/miniconda3/condabin" >> $GITHUB_PATH
+      if: steps.cache-pkg.outputs.cache-hit == 'true'
+
       uses: actions/cache@v3
       id: cache-env
       with:
