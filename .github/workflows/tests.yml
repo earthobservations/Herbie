@@ -32,7 +32,7 @@ jobs:
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
-      TMPDIR: ${{ runner.temp }}
+      TMPDIR: ${{ process.env.RUNNER_TEMP }}
 
     defaults:
       run:
