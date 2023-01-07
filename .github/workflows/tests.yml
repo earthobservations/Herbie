@@ -71,12 +71,12 @@ jobs:
         activate-environment: herbie-test
         auto-activate-base: false
         use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
-      if: steps.cache-pkg.outputs.cache-hit != 'true'
+    #  if: steps.cache-pkg.outputs.cache-hit != 'true'
 
-    - name: WORKAROUND - Add `mamba` to system path
-      # When the `conda-pkg` cache can be restored, `mamba` is missing from system path.
-      run: echo "/usr/share/miniconda3/condabin" >> $GITHUB_PATH
-      if: steps.cache-pkg.outputs.cache-hit == 'true'
+    #- name: WORKAROUND - Add `mamba` to system path
+    #  # When the `conda-pkg` cache can be restored, `mamba` is missing from system path.
+    #  run: echo "/usr/share/miniconda3/condabin" >> $GITHUB_PATH
+    #  if: steps.cache-pkg.outputs.cache-hit == 'true'
 
     - name: CACHING - Anaconda environment
       uses: actions/cache@v3
