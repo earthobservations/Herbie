@@ -47,15 +47,16 @@ jobs:
 
     - name: Cache Anaconda packages
       uses: actions/cache@v3
+      id: cache-pkg
+      with:
+        path: ~/conda_pkgs_dir
+        key:
+          conda-pkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
+          env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
       env:
         # Increase this value if `environment-test.yml` has not changed,
         # but you still want to reset the cache.
         CACHE_NUMBER: 0
-      with:
-        path: ~/conda_pkgs_dir
-        key:
-          condapkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{ 
-          env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
 
     - name: Anaconda setup (Mambaforge)
       uses: conda-incubator/setup-miniconda@v2
@@ -73,16 +74,16 @@ jobs:
 
     - name: Cache Anaconda environment
       uses: actions/cache@v3
+      id: cache-env
       with:
         path: ${{ env.CONDA }}/envs
         key:
-          condaenv-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{ 
+          conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
           env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
       env:
         # Increase this value if `environment-test.yml` has not changed,
         # but you still want to reset the cache.
         CACHE_NUMBER: 0
-      id: cache
 
     - name: Anaconda info
       run: conda info
@@ -94,7 +95,7 @@ jobs:
     - name: Update Anaconda environment
       run:
         mamba env update --name herbie-test --file environment-test.yml
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-env.outputs.cache-hit != 'true'
 
     - name: Install project
       run: |
