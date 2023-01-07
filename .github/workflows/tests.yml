@@ -71,7 +71,7 @@ jobs:
         activate-environment: herbie-test
         auto-activate-base: false
         use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
-      if: steps.cache-pkg.outputs.cache-hit != 'true'
+      # if: steps.cache-pkg.outputs.cache-hit != 'true'
 
     - name: Cache Anaconda environment
       uses: actions/cache@v3
@@ -86,12 +86,16 @@ jobs:
         # but you still want to reset the cache.
         CACHE_NUMBER: 0
 
-    - name: Anaconda info
+    - name: DEBUG - Anaconda info
       run: conda info
-    - name: Anaconda configuration
+    - name: DEBUG - Anaconda configuration
       run: conda config --show
-    - name: Environment variables
+    - name: DEBUG - Environment variables
       run: printenv | sort
+    - name: DEBUG - Program paths
+      run: |
+        command -v conda
+        command -v mamba
 
     - name: Update Anaconda environment
       run:
