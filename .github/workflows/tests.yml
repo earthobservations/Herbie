@@ -54,7 +54,8 @@ jobs:
       with:
         path: ~/conda_pkgs_dir
         key:
-          ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+          condapkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{ 
+          env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
 
     - name: Anaconda setup (Mambaforge)
       uses: conda-incubator/setup-miniconda@v2
@@ -75,9 +76,8 @@ jobs:
       with:
         path: ${{ env.CONDA }}/envs
         key:
-          conda-${{ runner.os }}--${{ runner.arch }}--${{
-          hashFiles('environment-test.yml') }}-${{ env.CACHE_NUMBER
-          }}
+          condaenv-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{ 
+          env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
       env:
         # Increase this value if `environment-test.yml` has not changed,
         # but you still want to reset the cache.
