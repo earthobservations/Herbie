@@ -2,7 +2,7 @@ name: Tests (Python)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, ci-all-tests ]
   pull_request:
     branches: [ main ]
 
